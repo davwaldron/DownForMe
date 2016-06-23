@@ -6,7 +6,7 @@ $text = $_POST['text'];
 $token = $_POST['token'];
 
 # Check the token to ensure the request is coming from the correct Slack Team
-if($token != 'I1AyhiwvljhJsf34v5oqMr5M'){ #replace this with the token from your slash command configuration page
+if($token != '0123456789abcdef'){ # REALLY IMPORTANT: replace this with the token from your slash command configuration page
   $msg = "The token for the slash command doesn't match. Check your script.";
   die($msg);
 }
@@ -34,7 +34,9 @@ else {
     $msg = "Looks like that site is up";
 	}
 
+# Return the message whatever the result
 echo $msg;
 
+# Close off our cURL session to tidy up
 curl_close($ch);
 ?>

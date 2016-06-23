@@ -5,35 +5,36 @@ $command = $_POST['command'];
 $text = $_POST['text'];
 $token = $_POST['token'];
 
-$ch = curl_init();
-
-# Check the token and make sure the request is from our team 
-if($token != 'I1AyhiwvljhJsf34v5oqMr5'){ #replace this with the token from your slash command configuration page
+# Check the token to ensure the request is coming from the correct Slack Team
+if($token != 'I1AyhiwvljhJsf34v5oqMr5M'){ #replace this with the token from your slash command configuration page
   $msg = "The token for the slash command doesn't match. Check your script.";
   die($msg);
-  echo $msg;
 }
 
+# Create and populate the cURL session
+$ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, "http://downforeveryoneorjustme.com/" . $text);
 curl_setopt($ch, CURLOPT_HEADER, 0);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-curl_setopt($ch, CURLOPT_USERAGENT, "IsitupForSlack/1.0 (http://github.com/mccreath/istiupforslack; mccreath@gmail.com)");
+curl_setopt($ch, CURLOPT_USERAGENT, "DownForMe/1.0 (https://github.com/davwaldron/DownForMe; dav@davwaldron.com)");
+
 $ch_response = curl_exec($ch);
 
-# echo "The response was of length - " . strlen($ch_response) . "<br>\n";
-# echo "The response was  - " . $ch_response;
-if (curl_error($ch)) {echo "Error - " . curl_error($ch) . "<br>\n"; }
+# Was there an error?  Post it back
+if (curl_error($ch)) {
+	echo "Error - " . curl_error($ch) ;
+	}
 
-if((strpos($ch_response, "looks down from here")) !== false )
-{
-    echo "That site is down";
-}
-else
-{
-    echo "Looks like that site is up";
-}
+# So what was the result?  We read the text of the returned response for a string that says it's down
+# otherwise we return a positive.
+if((strpos($ch_response, "looks down from here")) !== false ) {
+    $msg = "That site is down";
+	}
+else {
+    $msg = "Looks like that site is up";
+	}
 
-#if preg_match("unable to connect to the website", $ch_response) {echo "that site is down";else(echo"that site is up";}
+echo $msg;
 
 curl_close($ch);
 ?>
